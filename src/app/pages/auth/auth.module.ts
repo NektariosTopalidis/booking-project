@@ -8,12 +8,15 @@ import { AuthPageRoutingModule } from './auth-routing.module';
 
 import { AuthPage } from './auth.page';
 
+import { MaterialModule } from 'src/app/shared/material/material.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AuthPageRoutingModule
+    AuthPageRoutingModule,
+    MaterialModule
   ],
   declarations: [AuthPage]
 })

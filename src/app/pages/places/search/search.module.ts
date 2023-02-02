@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
 import { SearchPageRoutingModule } from './search-routing.module';
 
 import { SearchPage } from './search.page';
@@ -13,6 +15,7 @@ import { SearchPage } from './search.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    ScrollingModule,
     SearchPageRoutingModule
   ],
   declarations: [SearchPage]
