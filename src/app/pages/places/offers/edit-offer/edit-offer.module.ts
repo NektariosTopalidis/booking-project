@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { MaterialModule } from 'src/app/shared/material/material.module';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -13,6 +16,8 @@ import { EditOfferPage } from './edit-offer.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    ReactiveFormsModule,
+    MaterialModule,
     EditOfferPageRoutingModule
   ],
   declarations: [EditOfferPage]

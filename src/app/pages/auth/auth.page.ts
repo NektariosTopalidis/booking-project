@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -9,8 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage implements OnInit {
-  username = '';
-  password = '';
+  isLogin: boolean = true;
 
   constructor(private authService: AuthService,private router: Router,private loadingCtrl: LoadingController) { }
 
@@ -23,11 +23,32 @@ export class AuthPage implements OnInit {
 
       this.authService.login();
       setTimeout(() => {
-        this.username = '';
-        this.password = '';
         loadingEl.dismiss();
+
         this.router.navigateByUrl('/places/tabs/search');
       },1500)
     })
+  }
+
+
+  onSubmit(form: NgForm){
+    if(!form.valid){
+      return;
+    }
+    const username = form.value.username;
+    const password = form.value.password;
+
+    if(this.isLogin){
+      this.onLogin();
+    }
+    else{
+      const email = form.value.email
+    }
+
+    form.reset();
+  }
+
+  onSwitch(){
+    this.isLogin = !this.isLogin
   }
 }

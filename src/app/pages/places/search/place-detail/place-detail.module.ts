@@ -6,6 +6,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { PlaceDetailPageRoutingModule } from './place-detail-routing.module';
 
+import { MaterialModule } from 'src/app/shared/material/material.module';
+
 import { PlaceDetailPage } from './place-detail.page';
 import { CreateBookingComponent } from 'src/app/pages/bookings/create-booking/create-booking.component';
 
@@ -14,7 +16,8 @@ import { CreateBookingComponent } from 'src/app/pages/bookings/create-booking/cr
     CommonModule,
     FormsModule,
     IonicModule,
-    PlaceDetailPageRoutingModule
+    PlaceDetailPageRoutingModule,
+    MaterialModule
   ],
   declarations: [
     PlaceDetailPage,

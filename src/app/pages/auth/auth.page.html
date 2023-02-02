@@ -1,40 +1,46 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Authenticate</ion-title>
+    <ion-title>{{isLogin? 'Login' : 'Sign Up'}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding ion-text-center">
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Username</mat-label>
-          <input matInput type="text" [(ngModel)]="username">
-          <button style="background-color: rgba(0,0,0,0);" *ngIf="username" matSuffix mat-icon-button aria-label="Clear" (click)="username=''">
-            <mat-icon [ngStyle]="{'color':'black'}">close</mat-icon>
-          </button>
-        </mat-form-field>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Password</mat-label>
-          <input matInput type="text" [(ngModel)]="password">
-          <button style="background-color: rgba(0,0,0,0);" *ngIf="password" matSuffix mat-icon-button aria-label="Clear" (click)="password=''">
-            <mat-icon [ngStyle]="{'color':'black'}">close</mat-icon>
-          </button>
-        </mat-form-field>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button color="primary" (click)="onLogin()">
-          Login
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput type="text" ngModel name="username" required>
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!isLogin">
+        <ion-col>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" ngModel name="email" email required>
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" ngModel name="password" required>
+          </mat-form-field> 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-button color="primary" style="margin-bottom: 8px;" type="submit" expand="block" [disabled]="!f.valid">
+            {{isLogin? 'Login' : 'Sign Up'}}
+          </ion-button>
+          <ion-button type="button" color="primary" fill="outline" expand="block" (click)="onSwitch()">
+            Switch to {{isLogin? 'Sign Up' : 'Login'}}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

@@ -11,7 +11,48 @@
 
 
 <ion-content class="ion-text-center ion-padding">
-  <h1>{{ selectedPlace.description }}</h1>
-  <ion-button color="primary" (click)="onBookPlace()">Book</ion-button>
+  <form>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput type="text" ngModel name="first-name" required="">
+          </mat-form-field>
+        </ion-col>
+        <ion-col size="6">
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" ngModel name="last-name" required="">
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label position="floating">Number of Guests</ion-label>
+          <ion-select [ngModel]="'2'" name="guest-number">
+            <ion-select-option value="1">1</ion-select-option>
+            <ion-select-option value="2">2</ion-select-option>
+            <ion-select-option value="3">3</ion-select-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <mat-form-field class="example-full-width" appearance="outline" >
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker" >
+              <input matStartDate ngModel name="fromDate" [min]="selectedPlace.avalaibleFrom" [max]="selectedPlace.avalaibleTo" placeholder="Start date" required #startDateCtrl="ngModel">
+              <input matEndDate ngModel [min]="minDate" [max]="selectedPlace.availableTo" name="toDate" placeholder="End date" required>
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker  touchUi #picker></mat-date-range-picker>
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-button color="primary" (click)="onBookPlace()" expand="block">Book</ion-button>
+  </form> 
 </ion-content>
 

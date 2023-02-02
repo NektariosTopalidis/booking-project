@@ -4,22 +4,56 @@
       <ion-back-button defaultHref="places/tabs/offers"></ion-back-button>
     </ion-buttons>
     <ion-title>New Offer</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCreateOffer()" [disabled]="!form.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <ion-col size="4">row1-col1</ion-col>
-      <ion-col size="4">
-        <ion-card>
-          <ion-card-content>
-            <h1>row1</h1>
-            <p>col2</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content class="ion-padding ion-text-center">
+  <form [formGroup]="form">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Title</mat-label>
+            <input matInput type="text" formControlName="title">
+          </mat-form-field>
+        </ion-col>
+        <ion-col size="6">
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Price</mat-label>
+            <input matInput type="number" formControlName="price">
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput #message maxlength="256" formControlName="description" placeholder="Describe your place..." rows="8"></textarea>
+            <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate formControlName="fromDate" placeholder="Start date">
+              <input matEndDate formControlName="toDate" placeholder="End date">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker touchUi #picker></mat-date-range-picker>
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
 
 </ion-content>
