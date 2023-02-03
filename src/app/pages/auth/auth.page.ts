@@ -17,14 +17,14 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
-  onLogin(){
+  onLogin(form: NgForm){
     this.loadingCtrl.create({keyboardClose: true, message: 'Logging in...'}).then(loadingEl => {
       loadingEl.present();
 
       this.authService.login();
       setTimeout(() => {
         loadingEl.dismiss();
-
+        form.reset();
         this.router.navigateByUrl('/places/tabs/search');
       },1500)
     })
@@ -39,13 +39,12 @@ export class AuthPage implements OnInit {
     const password = form.value.password;
 
     if(this.isLogin){
-      this.onLogin();
+      this.onLogin(form);
     }
     else{
       const email = form.value.email
     }
 
-    form.reset();
   }
 
   onSwitch(){

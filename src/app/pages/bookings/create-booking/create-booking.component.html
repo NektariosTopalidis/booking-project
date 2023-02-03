@@ -11,7 +11,7 @@
 
 
 <ion-content class="ion-text-center ion-padding">
-  <form>
+  <form (ngSubmit)="onBookPlace()" #f="ngForm">
     <ion-grid>
       <ion-row>
         <ion-col size="6">
@@ -52,7 +52,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-button color="primary" (click)="onBookPlace()" expand="block">Book</ion-button>
-  </form> 
+    <ion-button type="submit" color="primary" [disabled]="!f.valid" expand="block">Book</ion-button>
+  </form>
 </ion-content>
 
