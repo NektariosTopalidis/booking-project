@@ -38,9 +38,9 @@ export class CreateBookingComponent implements OnInit {
       bookingData: {
         firstName: this.form.value['first-name'],
         lastName: this.form.value['last-name'],
-        guests: this.form.value['guest-number'],
-        startDate: this.form.value['fromDate'],
-        endDate: this.form.value['toDate']
+        guests: +this.form.value['guest-number'],
+        startDate: new Date(this.form.value['fromDate']),
+        endDate: new Date(this.form.value['toDate'])
       }
     }, 'confirm','bookModal');
   }
