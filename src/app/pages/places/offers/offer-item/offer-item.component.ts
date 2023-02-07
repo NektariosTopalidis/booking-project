@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Place } from 'src/app/models/places.model';
 
 
@@ -11,9 +12,10 @@ import { Place } from 'src/app/models/places.model';
 export class OfferItemComponent implements OnInit {
   @Input() offer!: Place;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {}
+
 
 
   getDummyDate(){

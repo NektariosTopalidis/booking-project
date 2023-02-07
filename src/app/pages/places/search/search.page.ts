@@ -4,6 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SegmentChangeEventDetail } from '@ionic/angular';
 import { Place } from 'src/app/models/places.model';
 import { PlacesService } from 'src/app/services/places/places.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -19,8 +20,10 @@ export class SearchPage implements OnInit, OnDestroy {
   private placesSub!: Subscription;
 
   filter: string = 'all';
+  
+  isLoading: boolean = false;
 
-  constructor(private placesService: PlacesService,private authService: AuthService) { }
+  constructor(private placesService: PlacesService,private authService: AuthService,private router: Router) { }
 
   ngOnInit() {
     this.placesSub = this.placesService.places.subscribe((places: Place[]) => {
@@ -28,6 +31,13 @@ export class SearchPage implements OnInit, OnDestroy {
       this.relevantPlaces = this.loadedPlaces;
 
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+    });
+  }
+
+  ionViewWillEnter(){
+    this.isLoading = true;
+    this.placesService.fetchPlaces().subscribe(() => {
+      this.isLoading = false;
     });
   }
 
@@ -42,6 +52,11 @@ export class SearchPage implements OnInit, OnDestroy {
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
     }
   }
+
+  showDetails(id: string){
+    this.router.navigate(['/','places','tabs','search',id])
+  }
+
 
   ngOnDestroy(): void {
       this.placesSub.unsubscribe();
