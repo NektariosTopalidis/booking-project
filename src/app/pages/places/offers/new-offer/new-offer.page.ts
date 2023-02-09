@@ -72,19 +72,14 @@ export class NewOfferPage implements OnInit {
       message: 'Creating place...'
     }).then(loaderEl => {
       loaderEl.present();
-      this.placesService.uploadImage(this.form.get('image')?.value).pipe(
-        switchMap(uploadRes => {
-          return this.placesService.addPlace(
-            this.form.value.title,
-            this.form.value.description,
-            +this.form.value.price,
-            new Date(this.form.value.fromDate),
-            new Date(this.form.value.toDate),
-            uploadRes.imageUrl
-          )
-        }
-      ))
-      .subscribe(() => {
+      this.placesService.addPlace(
+        this.form.value.title,
+        this.form.value.description,
+        +this.form.value.price,
+        new Date(this.form.value.fromDate),
+        new Date(this.form.value.toDate),
+        this.form.value.image
+      ).subscribe(() => {
         loaderEl.dismiss();
         this.form.reset();
         this.router.navigate(['/places/tabs/offers']);
@@ -95,11 +90,9 @@ export class NewOfferPage implements OnInit {
   onImagePicked(imageData: string){
     let imageFile;
     console.log(imageData);
-    // imageData.replace('data:image/jpeg;base64', '')
     try{
-      imageFile = base64toBlob(imageData.replace('data:image/jpeg;base64', ''), 'image/jpeg');
       console.log(imageFile);
-      this.form.patchValue({image: imageFile});
+      this.form.patchValue({image: imageData});
     }
     catch (err){
       console.log(err);

@@ -40,7 +40,7 @@ export class ImagePickerComponent implements OnInit {
     })
     .then(image =>{
       this.selectedImage = 'data:image/jpg;base64,' + image.base64String;
-      this.imagePick.emit(image.base64String);
+      this.imagePick.emit(this.selectedImage);
     })
     .catch(err => {
       console.log(err);
