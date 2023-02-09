@@ -11,6 +11,8 @@ import { NewOfferPage } from './new-offer.page';
 
 import { MaterialModule } from 'src/app/shared/material/material.module';
 
+import { ImagePickerComponent } from 'src/app/shared/pickers/image-picker/image-picker.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -20,6 +22,6 @@ import { MaterialModule } from 'src/app/shared/material/material.module';
     NewOfferPageRoutingModule,
     MaterialModule
   ],
-  declarations: [NewOfferPage]
+  declarations: [NewOfferPage,ImagePickerComponent]
 })
 export class NewOfferPageModule {}

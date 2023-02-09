@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonItemSliding, NavController } from '@ionic/angular';
+import { IonItemSliding, LoadingController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Place } from 'src/app/models/places.model';
 import { PlacesService } from 'src/app/services/places/places.service';
@@ -17,7 +17,7 @@ export class OffersPage implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
 
-  constructor(private placesService: PlacesService,private router: Router) { }
+  constructor(private placesService: PlacesService,private router: Router,private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
     this.placeSub = this.placesService.places.subscribe((places: Place[]) => {
@@ -39,6 +39,20 @@ export class OffersPage implements OnInit, OnDestroy {
   onEdit(offerId: string,slidingItem: IonItemSliding){
     slidingItem.close();
     this.router.navigate(['/','places','tabs','offers','edit',offerId]);  
+  }
+
+  onDelete(offerId: string,slidingItem: IonItemSliding){
+    slidingItem.close();
+    this.loadingCtrl.create({
+      message: 'Canceling...'
+    }).then(loaderEl => {
+      loaderEl.present()
+      slidingItem.close();
+  
+      this.placesService.deletePlace(offerId).subscribe(() => {
+        loaderEl.dismiss();
+      });
+    })
   }
 
   ngOnDestroy(): void {

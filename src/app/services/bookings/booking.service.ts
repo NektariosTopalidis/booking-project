@@ -5,6 +5,19 @@ import { Injectable } from '@angular/core';
 import { Booking } from 'src/app/models/booking.model';
 import { HttpClient } from '@angular/common/http';
 
+interface BookingData {
+  bookedFrom:Date;
+  bookedTo: Date;
+  firstName: string;
+  guestNumber: number;
+  lastName: string;
+  placeId: string;
+  placeImg: string;
+  placeTitle: string;
+  userId: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -38,13 +51,36 @@ export class BookingService {
     )
   }
 
+  fetchBookings(){
+    return this.http.get<{[key: string]: BookingData}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="userId"&equalTo="${this.authService.userId}"`)
+    .pipe(
+        map(bookingData => {
+          const bookings = [];
+
+          for(const key in bookingData){
+            if(bookingData.hasOwnProperty(key)){
+              bookings.push(new Booking(key,bookingData[key].placeId,bookingData[key].userId,bookingData[key].placeTitle,bookingData[key].guestNumber,bookingData[key].placeImg,bookingData[key].firstName,bookingData[key].lastName,new Date(bookingData[key].bookedFrom),new Date(bookingData[key].bookedTo)))
+            }
+          }
+          return bookings;
+        }
+      ),
+        tap(bookings => {
+          this._bookings.next(bookings);
+        })
+    )
+  }
+
   cancelBooking(bookingId: string){
-    return this.bookings.pipe(
+    return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json`)
+    .pipe(
+      switchMap(() => {
+        return this.bookings;
+      }),
       take(1),
-      delay(1000),
       tap(bookings => {
         this._bookings.next(bookings.filter(b => b.id !== bookingId));
       })
-    );
+    )
   }
 }

@@ -3,6 +3,7 @@ import { AuthService } from './services/auth/auth.service';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style  } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
 
 
@@ -18,8 +19,9 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      StatusBar.setStyle({style: Style.Default});
-      SplashScreen.hide();
+      if(Capacitor.isPluginAvailable('SplashScreen')){
+        SplashScreen.hide();
+      }
     });
   }
 

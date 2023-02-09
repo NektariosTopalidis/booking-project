@@ -5,6 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { NewOfferPage } from './new-offer.page';
 
+
+
 const routes: Routes = [
   {
     path: '',

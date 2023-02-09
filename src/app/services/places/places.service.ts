@@ -116,5 +116,18 @@ export class PlacesService {
     )
   }
 
+  deletePlace(placeId: string){
+    return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${placeId}.json`)
+    .pipe(
+      switchMap(() => {
+        return this.places;
+      }),
+      take(1),
+      tap(places => {
+        this._places.next(places.filter(p => p.id !== placeId));
+      })
+    )
+  }
+
 
 }
