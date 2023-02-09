@@ -89,7 +89,7 @@ export class NewOfferPage implements OnInit {
 
   onImagePicked(imageData: string){
     let imageFile;
-    console.log(imageData);
+    // console.log(imageData);
     try{
       console.log(imageFile);
       this.form.patchValue({image: imageData});

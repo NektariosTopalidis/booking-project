@@ -5,6 +5,7 @@ import { SegmentChangeEventDetail } from '@ionic/angular';
 import { Place } from 'src/app/models/places.model';
 import { PlacesService } from 'src/app/services/places/places.service';
 import { Router } from '@angular/router';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search',
@@ -42,15 +43,18 @@ export class SearchPage implements OnInit, OnDestroy {
   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>){
-    // console.log(event.detail.value);
-    if(event.detail.value === 'all'){
-      this.relevantPlaces = this.loadedPlaces;
-      this.listedLoadedPlaces = this.relevantPlaces.slice(1);
-    }
-    else{
-      this.relevantPlaces = this.loadedPlaces.filter(place => place.userId !== this.authService.userId );
-      this.listedLoadedPlaces = this.relevantPlaces.slice(1);
-    }
+    this.authService.userId.pipe(take(1)).subscribe(userId => {
+      // console.log(event.detail.value);
+      if(event.detail.value === 'all'){
+        this.relevantPlaces = this.loadedPlaces;
+        this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+      }
+      else{
+        this.relevantPlaces = this.loadedPlaces.filter(place => place.userId !== userId );
+        this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+      }
+    })
+
   }
 
   showDetails(id: string){

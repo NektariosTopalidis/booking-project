@@ -36,20 +36,34 @@ export class PlacesService {
   }
 
   getPlace(id: string){
-    return this.http.get<fetchedPlace>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${id}.json`
-    ).pipe(map(placeData => {
+    return this.authService.token.pipe(take(1),switchMap(token => {
+      return this.http.get<fetchedPlace>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${id}.json?auth=${token}`)
+    }),map(placeData => {
       return new Place(id,placeData.title,placeData.description,placeData.imageUrl,placeData.price,new Date(placeData.availableFrom),new Date(placeData.availableTo),placeData.userId)
     }));
 
   }
 
   addPlace( title: string, description: string, price: number, availableFrom: Date, availableTo: Date,imageUrl: string){
-    const newPlace = new Place(Math.random().toString(),title,description,imageUrl,price,availableFrom,availableTo,this.authService.userId);
     let generatedId: string;
-    return this.http.post<{name: string}>('https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places.json',{
-      ...newPlace, 
-      id: null
-    }).pipe(
+    let newPlace: Place;
+    let fetchedUserId: string;
+    return this.authService.userId.pipe(take(1),
+    switchMap(userId => {
+      fetchedUserId = userId!;
+      return this.authService.token;
+    }),
+    take(1),
+    switchMap(token => {
+      if(!fetchedUserId){
+        throw new Error('No user found.');
+      }
+      newPlace = new Place(Math.random().toString(),title,description,imageUrl,price,availableFrom,availableTo,fetchedUserId);
+      return this.http.post<{name: string}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places.json?auth=${token}`,{
+        ...newPlace, 
+        id: null
+      })
+    }),
       switchMap(resData => {
         generatedId = resData.name;
         return this.places
@@ -63,8 +77,9 @@ export class PlacesService {
   }
 
   fetchPlaces(){
-    return this.http.get<{[key: string]:  fetchedPlace}>('https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places.json')
-    .pipe(map(resData => {
+    return this.authService.token.pipe(take(1),switchMap(token => {
+      return this.http.get<{[key: string]:  fetchedPlace}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places.json?auth=${token}`)
+    }),map(resData => {
       const places = [];
       for(const key in resData){
         if(resData.hasOwnProperty(key)){
@@ -80,20 +95,15 @@ export class PlacesService {
     
   }
 
-  uploadImage(image: File){
-    const uploadData = new FormData();
-    uploadData.append('image',image);
 
-    
-    return this.http.post<{imageUrl: string,imagePath: string}>('https://us-central1-booking-project-18fb3.cloudfunctions.net/storeImage',
-      uploadData
-    );
-  }
 
   updatePlace(placeId: string,title:string,description: string,price: number){
     let updatedPlaces: Place[];
-    
-    return this.places.pipe(
+    let fetchedToken: string;
+    return this.authService.token.pipe(take(1),switchMap(token => {
+      fetchedToken = token!;
+      return this.places;
+    }),
       take(1), 
       switchMap(places => {
         if(!places || places.length <= 0) {
@@ -114,7 +124,7 @@ export class PlacesService {
 
         updatedPlaces[updatedPlaceIndex] = new Place(oldPlace.id,title,description,oldPlace.imageUrl,price,oldPlace.availableFrom,oldPlace.availableTo,oldPlace.userId);
 
-        return this.http.put(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${placeId}.json`,{
+        return this.http.put(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${placeId}.json?auth=${fetchedToken}`,{
           ...updatedPlaces[updatedPlaceIndex],
           id: null
         })
@@ -126,8 +136,9 @@ export class PlacesService {
   }
 
   deletePlace(placeId: string){
-    return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${placeId}.json`)
-    .pipe(
+    return this.authService.token.pipe(take(1), switchMap(token => {
+      return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places/${placeId}.json?auth=${token}`)
+    }),
       switchMap(() => {
         return this.places;
       }),

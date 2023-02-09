@@ -4,6 +4,7 @@ import { IonItemSliding, LoadingController } from '@ionic/angular';
 import { Booking } from 'src/app/models/booking.model';
 import { BookingService } from 'src/app/services/bookings/booking.service';
 
+
 @Component({
   selector: 'app-bookings',
   templateUrl: './bookings.page.html',

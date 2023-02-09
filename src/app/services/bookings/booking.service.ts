@@ -34,11 +34,27 @@ export class BookingService {
 
   addBooking(placeId: string,placeTitle: string,placeImg: string,firstName: string,lastName: string,guestNumber: number,fromDate: Date,toDate: Date){
     let generatedId: string;
-    const newBooking = new Booking(Math.random().toString(),placeId,this.authService.userId,placeTitle,guestNumber,placeImg,firstName,lastName,fromDate,toDate);
-    return this.http.post<{name: string}>('https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json',{
-      ...newBooking,
-      id: null
-    }).pipe(
+    let newBooking: Booking;
+    let fetchedUserId: string;
+    return this.authService.userId.pipe(
+      take(1), 
+      switchMap(userId => {
+        if(!userId){
+          throw new Error('No user id found!');
+        }
+        fetchedUserId = userId!;
+        return this.authService.token
+
+      } 
+      ),
+      take(1),
+      switchMap(token => {
+        newBooking = new Booking(Math.random().toString(),placeId,fetchedUserId,placeTitle,guestNumber,placeImg,firstName,lastName,fromDate,toDate);
+        return this.http.post<{name: string}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${token}`,{
+          ...newBooking,
+          id: null
+        })
+      }),
       switchMap(resData => {
         generatedId = resData.name;
         return this.bookings;
@@ -52,28 +68,39 @@ export class BookingService {
   }
 
   fetchBookings(){
-    return this.http.get<{[key: string]: BookingData}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="userId"&equalTo="${this.authService.userId}"`)
-    .pipe(
-        map(bookingData => {
-          const bookings = [];
+    let fetchedUserId: string;
+    return this.authService.userId.pipe(take(1),switchMap(userId => {
+      if(!userId){
+        throw new Error('No user found.');
+      }
+      fetchedUserId = userId;
+      return this.authService.token;
+    }),
+    take(1),
+    switchMap(token => {
+      return this.http.get<{[key: string]: BookingData}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`)
+    }),
+      map(bookingData => {
+        const bookings = [];
 
-          for(const key in bookingData){
-            if(bookingData.hasOwnProperty(key)){
-              bookings.push(new Booking(key,bookingData[key].placeId,bookingData[key].userId,bookingData[key].placeTitle,bookingData[key].guestNumber,bookingData[key].placeImg,bookingData[key].firstName,bookingData[key].lastName,new Date(bookingData[key].bookedFrom),new Date(bookingData[key].bookedTo)))
-            }
+        for(const key in bookingData){
+          if(bookingData.hasOwnProperty(key)){
+            bookings.push(new Booking(key,bookingData[key].placeId,bookingData[key].userId,bookingData[key].placeTitle,bookingData[key].guestNumber,bookingData[key].placeImg,bookingData[key].firstName,bookingData[key].lastName,new Date(bookingData[key].bookedFrom),new Date(bookingData[key].bookedTo)))
           }
-          return bookings;
         }
-      ),
-        tap(bookings => {
-          this._bookings.next(bookings);
-        })
+        return bookings;
+      }),
+      tap(bookings => {
+        this._bookings.next(bookings);
+      })
     )
   }
 
   cancelBooking(bookingId: string){
-    return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json`)
-    .pipe(
+    return this.authService.token.pipe(take(1), switchMap(token => {
+
+      return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json?auth=${token}`)
+    }),
       switchMap(() => {
         return this.bookings;
       }),
