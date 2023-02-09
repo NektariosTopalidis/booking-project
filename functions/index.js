@@ -55,7 +55,7 @@ exports.storeImage = functions.https.onRequest((req, res) => {
         .then(() => {
           return res.status(201).json({
             imageUrl:
-              'https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app' +
+              'https://firebasestorage.googleapis.com/v0/b/' +
               storage.bucket('booking-project-18fb3.appspot.com').name +
               '/o/' +
               encodeURIComponent(imagePath) +

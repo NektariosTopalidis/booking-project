@@ -43,9 +43,8 @@ export class PlacesService {
 
   }
 
-  addPlace( title: string, description: string, price: number, availableFrom: Date, availableTo: Date){
-    let img = 'https://media.tatler.com/photos/6256d9edc72b744ec1209466/3:2/w_1920,h_1280,c_limit/LanierHouse_13042022_220323_EJ_123_e_35_TH_0044-Edit_HIGH_RES.jpg';
-    const newPlace = new Place(Math.random().toString(),title,description,img,price,availableFrom,availableTo,this.authService.userId);
+  addPlace( title: string, description: string, price: number, availableFrom: Date, availableTo: Date,imageUrl: string){
+    const newPlace = new Place(Math.random().toString(),title,description,imageUrl,price,availableFrom,availableTo,this.authService.userId);
     let generatedId: string;
     return this.http.post<{name: string}>('https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/offered-places.json',{
       ...newPlace, 
@@ -79,6 +78,16 @@ export class PlacesService {
     })
     )
     
+  }
+
+  uploadImage(image: File){
+    const uploadData = new FormData();
+    uploadData.append('image',image);
+
+    
+    return this.http.post<{imageUrl: string,imagePath: string}>('https://us-central1-booking-project-18fb3.cloudfunctions.net/storeImage',
+      uploadData
+    );
   }
 
   updatePlace(placeId: string,title:string,description: string,price: number){
