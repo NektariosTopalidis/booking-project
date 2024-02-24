@@ -50,7 +50,7 @@ export class BookingService {
       take(1),
       switchMap(token => {
         newBooking = new Booking(Math.random().toString(),placeId,fetchedUserId,placeTitle,guestNumber,placeImg,firstName,lastName,fromDate,toDate);
-        return this.http.post<{name: string}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${token}`,{
+        return this.http.post<{name: string}>(`apiUrl/bookings.json?auth=${token}`,{
           ...newBooking,
           id: null
         })
@@ -78,7 +78,7 @@ export class BookingService {
     }),
     take(1),
     switchMap(token => {
-      return this.http.get<{[key: string]: BookingData}>(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`)
+      return this.http.get<{[key: string]: BookingData}>(`apiUrl/bookings.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`)
     }),
       map(bookingData => {
         const bookings = [];
@@ -99,7 +99,7 @@ export class BookingService {
   cancelBooking(bookingId: string){
     return this.authService.token.pipe(take(1), switchMap(token => {
 
-      return this.http.delete(`https://booking-project-18fb3-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json?auth=${token}`)
+      return this.http.delete(`apiUrl/bookings/${bookingId}.json?auth=${token}`)
     }),
       switchMap(() => {
         return this.bookings;
